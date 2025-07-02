@@ -76,18 +76,25 @@ class DigitRecognizerGUI:
         img = ImageOps.invert(img)
         img = center_image(img)
         img = img.resize((28, 28), Image.LANCZOS)
-        img = np.array(img)
-        img = 255 - img  # Invert if needed (white digit on black background)
-        img = img / 255.0  # Normalize
-        img = img.reshape(1, 28, 28)
+
+        img_array = np.array(img)
+        img_binary = (img_array > 30).astype(int)  # Threshold to binary (adjust if needed)
+
+        img_array = 255 - img_array
+        img_array = img_array / 255.0
+        img_array = img_array.reshape(1, 28, 28)
 
         # Predict
-        pred = model.predict(img)
+        pred = model.predict(img_array)
         digit = np.argmax(pred)
         confidence = np.max(pred)
-        self.result_label.config(text=f'Prediction: {digit} (Confidence: {confidence:.2f})')
+
+        if confidence < 0.65:
+            self.result_label.config(text="Not a number (Low confidence)")
+        else:
+            self.result_label.config(text=f'Prediction: {digit} (Confidence: {confidence:.2f})')
 
 if __name__ == '__main__':
     root = tk.Tk()
     app = DigitRecognizerGUI(root)
-    root.mainloop() 
+    root.mainloop()
