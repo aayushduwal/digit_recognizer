@@ -4,20 +4,19 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 
-# Load the trained model
 model = keras.models.load_model('mnist_digit_model.h5')
 
 def center_image(img):
     # Convert to numpy array
     arr = np.array(img)
-    # Find bounding box of the digit
+    # bounding box of the digit check gareko
     coords = np.column_stack(np.where(arr > 0))
     if coords.size == 0:
         return img
     y0, x0 = coords.min(axis=0)
     y1, x1 = coords.max(axis=0)
     cropped = img.crop((x0, y0, x1+1, y1+1))
-    # Create a new blank image and paste the cropped digit in the center
+
     new_img = Image.new('L', img.size, color=0)
     paste_x = (img.size[0] - cropped.size[0]) // 2
     paste_y = (img.size[1] - cropped.size[1]) // 2
@@ -32,7 +31,7 @@ class DigitRecognizerGUI:
         self.canvas_height = 200
         self.bg_color = 'black'
         self.paint_color = 'white'
-        self.brush_size = 6  # Thinner brush for better MNIST-like digits
+        self.brush_size = 6  
 
         self.canvas = tk.Canvas(root, width=self.canvas_width, height=self.canvas_height, bg=self.bg_color)
         self.canvas.pack()
@@ -71,14 +70,14 @@ class DigitRecognizerGUI:
         self.result_label.config(text='')
 
     def recognize_digit(self):
-        # Resize to 28x28 and invert colors for MNIST
+    
         img = self.image1.copy()
         img = ImageOps.invert(img)
         img = center_image(img)
         img = img.resize((28, 28), Image.LANCZOS)
 
         img_array = np.array(img)
-        img_binary = (img_array > 30).astype(int)  # Threshold to binary (adjust if needed)
+        img_binary = (img_array > 30).astype(int)  
 
         img_array = 255 - img_array
         img_array = img_array / 255.0

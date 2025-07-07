@@ -4,7 +4,6 @@ from PIL import Image, ImageDraw, ImageOps
 import pytesseract
 import os
 
-# Optional: Uncomment and set path if you're on Windows and Tesseract isn't in PATH
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 DIGIT_NAMES = {
@@ -23,18 +22,18 @@ DIGIT_NAMES = {
 class DigitRecognizerApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Digit Recognizer (OCR)")
+        self.root.title("Handwritten Digit Recognizer")
         self.canvas_width = 200
         self.canvas_height = 200
 
-        # Canvas and PIL image for drawing
+        # window vitra drawing garna canvas banako
         self.canvas = tk.Canvas(root, width=self.canvas_width, height=self.canvas_height, bg='black')
         self.canvas.pack()
 
         self.image1 = Image.new('L', (self.canvas_width, self.canvas_height), color=0)
         self.draw_pil = ImageDraw.Draw(self.image1)
 
-        # Buttons
+        # Buttons for recognizing and clearing
         self.button_frame = tk.Frame(root)
         self.button_frame.pack()
 
@@ -48,7 +47,7 @@ class DigitRecognizerApp:
         self.result_label = tk.Label(root, text="", font=("Arial", 20))
         self.result_label.pack(pady=10)
 
-        # Bind drawing events
+        # mouse tracking the drawing
         self.last_x, self.last_y = None, None
         self.canvas.bind('<B1-Motion>', self.draw)
         self.canvas.bind('<ButtonRelease-1>', self.reset)
